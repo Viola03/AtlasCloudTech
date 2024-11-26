@@ -1,11 +1,15 @@
 # base on latest python image
 FROM python:latest
+
+
 # add our python program
 ADD infofile.py ./
+# add our python program
 ADD loader.py ./
 # install dependent libraries
 RUN pip install numpy uproot awkward vector pyarrow requests aiohttp
 # Create the directory for output chunks
 RUN mkdir -p data/chunks
+RUN chmod 777 data/chunks
 # the command to run our program
 CMD [ "python", "./loader.py"]

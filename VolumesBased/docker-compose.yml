@@ -1,14 +1,27 @@
 services:
+  # init:
+  #   image: busybox
+  #   volumes:
+  #     - shared:/data
+  #   command: sh -c "rm -rf /data/*"
+
   loader:
     build: ./loader
     volumes:
       - shared:/data
+    # depends_on:
+    #   - init
+
   # worker:
   #   build: ./worker
   #   deploy:
-  #     replicas: 4  # Adjust 
+  #     replicas: 4  # Adjustable
   #   volumes:
   #     - shared:/data
+  #   depends_on:
+  #     - init
+  #     - loader
+
   # aggregator:
   #   build: ./outputter
   #   volumes:

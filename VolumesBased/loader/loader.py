@@ -7,6 +7,8 @@ import os
 path = "https://atlas-opendata.web.cern.ch/atlas-opendata/samples/2020/4lep/"
 output_path = "data/chunks"  # Mounted shared volume in Docker Compose
 
+os.makedirs(output_path, exist_ok=True)
+
 # Chunk size
 CHUNK_SIZE = 100000
 

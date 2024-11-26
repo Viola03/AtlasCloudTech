@@ -1,9 +1,11 @@
 # base on latest python image
 FROM python:latest
+
 # add our python program
 ADD infofile.py ./
 ADD workerfunctions.py ./
 ADD worker.py ./
+
 # install dependent libraries
 RUN pip install pandas numpy uproot awkward vector pyarrow requests aiohttp
 # Create the directory for output chunks
