@@ -1,0 +1,17 @@
+services:
+  loader:
+    build: ./loader
+    volumes:
+      - shared:/data
+  # worker:
+  #   build: ./worker
+  #   deploy:
+  #     replicas: 4  # Adjust 
+  #   volumes:
+  #     - shared:/data
+  # aggregator:
+  #   build: ./outputter
+  #   volumes:
+  #     - shared:/data
+volumes:
+  shared:

@@ -1,0 +1,4 @@
+# base on latest python image
+FROM python:latest
+
+RUN pip install numpy matplotlib uproot awkward vector pyarrow requests aiohttp pika

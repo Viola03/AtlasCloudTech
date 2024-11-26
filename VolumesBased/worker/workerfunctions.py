@@ -1,6 +1,8 @@
 import vector
 import infofile
 lumi = 10
+MeV = 0.001
+GeV = 1.0
 
 # Functions
 # Cut lepton type (electron type is 11,  muon type is 13)

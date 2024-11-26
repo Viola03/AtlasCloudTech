@@ -1,7 +1,7 @@
 import os
 import shutil
 import awkward as ak
-import pandas 
+import pandas
 from workerfunctions import *
 
 INPUT_DIR = "data/chunks"
