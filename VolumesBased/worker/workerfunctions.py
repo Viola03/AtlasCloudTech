@@ -1,5 +1,5 @@
 import vector
-import CloudTechAssignment.VolumesBased.infofile as infofile
+import infofile
 lumi = 10
 MeV = 0.001
 GeV = 1.0

@@ -4,8 +4,10 @@ import awkward as ak
 import os
 
 # Define the path to the data and output directory
-path = "https://atlas-opendata.web.cern.ch/atlas-opendata/samples/2020/4lep/"
-output_path = "data/chunks"  # Mounted shared volume in Docker Compose
+DATA_PATH = "https://atlas-opendata.web.cern.ch/atlas-opendata/samples/2020/4lep/"
+
+# Use an environment variable to set the output directory (defaults to /data/chunks in Docker)
+output_path = os.getenv("OUTPUT_PATH", "data/chunks")  # Default to the Docker-mounted volume
 
 os.makedirs(output_path, exist_ok=True)
 
@@ -57,7 +59,7 @@ def load_and_split_data(sample):
             prefix = "Data/" # Data prefix
         else: # MC prefix
             prefix = "MC/mc_"+str(infofile.infos[val]["DSID"])+"."
-        fileString = path+prefix+val+".4lep.root" # file name to open
+        fileString = DATA_PATH+prefix+val+".4lep.root" # file name to open
 
 
         # Open file
@@ -74,18 +76,30 @@ def load_and_split_data(sample):
             nIn = len(data) 
             #print(nIn)
             
-            chunk_file = os.path.join(output_path, f"{val}_{idx}.awkd")
-            ak.to_parquet(data, chunk_file)  
-            print(f"Saved chunk {idx} to {chunk_file}")
+            #Temp chunk file implemented to prevent workers from processing incomplete files
+            temp_chunk_file = os.path.join(output_path, f"{val}-{idx}.awkd.tmp")
+            chunk_file = os.path.join(output_path, f"{val}-{idx}.awkd")
+            
+            print(f"Writing to {temp_chunk_file}...")
+            ak.to_parquet(data, temp_chunk_file)
+            
+            # Rename to final filename after writing is complete
+            os.rename(temp_chunk_file, chunk_file)
+            print(f"Chunk written and renamed to {chunk_file}")
+            
+            # chunk_file = os.path.join(output_path, f"{val}_{idx}.awkd")
+            # ak.to_parquet(data, chunk_file)  
+            # print(f"Saved chunk {idx} to {chunk_file}")
 
-        # for idx, chunk in enumerate(tree.iterate(step_size=CHUNK_SIZE, library="ak")):
-        #     chunk_file = os.path.join(output_path, f"chunk_{idx}.awkd")
-        #     ak.to_parquet(chunk, chunk_file)  # Save chunk in a lightweight format
-        #     print(f"Saved chunk {idx} to {chunk_file}")
 
 if __name__ == "__main__":
     # Process each sample
     for s in samples:
         load_and_split_data(s)
+    
+    with open("/data/loader_done", "w") as f:
+        f.write("done")
+        
     print("Data loading and chunking complete.")
+
 

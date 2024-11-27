@@ -155,6 +155,9 @@ for s in samples:
 
     all_data[s] = ak.concatenate(frames) # dictionary entry is concatenated awkward arrays
 
+
+print(all_data[r'Signal ($m_H$ = 125 GeV)']) # print the dictionary of awkward arrays
+
 data_x,_ = np.histogram(ak.to_numpy(all_data['data']['mass']), 
                         bins=bin_edges ) # histogram the data
 data_x_errors = np.sqrt( data_x ) # statistical error on the data

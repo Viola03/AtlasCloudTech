@@ -3,10 +3,12 @@ import shutil
 import awkward as ak
 import pandas
 from workerfunctions import *
+import time
 
 INPUT_DIR = "data/chunks"
 PROCESSING_DIR = "data/processing"
 OUTPUT_DIR = "data/processed"
+DONE_FILE = "/data/loader_done"
 
 variables = ['lep_pt','lep_eta','lep_phi','lep_E','lep_charge','lep_type']
 weight_variables = ["mcWeight", "scaleFactor_PILEUP", "scaleFactor_ELE", "scaleFactor_MUON", "scaleFactor_LepTRIGGER"]
@@ -23,7 +25,9 @@ def process_chunk(chunk_path, output_path):
     
     # Number of events in this batch
     nIn = len(data)
-    val = chunk_path.split('_')[0]
+    directory = chunk_path.split('-')[0]
+    val = directory.split('/')[2]
+    print(val)
  
     # Apply filters and calculations
     # Record transverse momenta 
@@ -57,25 +61,38 @@ if __name__ == "__main__":
     while True:
         # Find the first available chunk to process
         chunk_files = [f for f in os.listdir(INPUT_DIR) if f.endswith(".awkd")]
-        if not chunk_files:
-            print("No more chunks to process. Exiting.")
-            break
+        if chunk_files:
 
-        # Lock the file by moving it to the processing directory
-        chunk_file = chunk_files[0]
-        chunk_path = os.path.join(INPUT_DIR, chunk_file)
-        processing_path = os.path.join(PROCESSING_DIR, chunk_file)
+            # Lock the file by moving it to the processing directory
+            chunk_file = chunk_files[0]
+            chunk_path = os.path.join(INPUT_DIR, chunk_file)
+            processing_path = os.path.join(PROCESSING_DIR, chunk_file)
 
-        shutil.move(chunk_path, processing_path)
+            shutil.move(chunk_path, processing_path)
 
-        try:
-            # Process the chunk
-            output_path = os.path.join(OUTPUT_DIR, f"processed_{chunk_file}")
-            process_chunk(processing_path, output_path)
+            try:
+                # Process the chunk
+                output_path = os.path.join(OUTPUT_DIR, f"processed-{chunk_file}")
+                process_chunk(processing_path, output_path)
 
-            # Mark as completed by deleting or archiving
-            os.remove(processing_path)
-        except Exception as e:
-            print(f"Error processing {chunk_file}: {e}")
-            # Move back to input directory for retry
-            shutil.move(processing_path, chunk_path)
+                # Mark as completed by deleting or archiving
+                os.remove(processing_path)
+            except Exception as e:
+                print(f"Error processing {chunk_file}: {e}")
+                # Move back to input directory for retry
+                shutil.move(processing_path, chunk_path)
+        else:
+            # No chunks available, check if the loader has finished
+            if os.path.exists(DONE_FILE):
+                print("Loader has completed. No more chunks to process. Exiting.")
+                break
+            else:
+                print("No chunks available. Waiting for new chunks...")
+                time.sleep(2)  # Wait before checking again
+    
+    # After processing all chunks, create a "workers_done" file
+   
+    workers_done_path = "/data/workers_done"
+    with open(workers_done_path, "w") as f:
+        f.write("done")
+    print(f"Worker signaling completion with {workers_done_path}.")

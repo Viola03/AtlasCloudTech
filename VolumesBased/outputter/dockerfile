@@ -1,0 +1,9 @@
+FROM python:latest
+
+# add our python program
+ADD outputter.py ./
+# install dependent libraries
+RUN pip install pandas numpy awkward matplotlib pyarrow requests aiohttp
+
+# the command to run our program
+CMD [ "python", "./outputter.py"]

@@ -1,30 +1,41 @@
 services:
-  # init:
-  #   image: busybox
-  #   volumes:
-  #     - shared:/data
-  #   command: sh -c "rm -rf /data/*"
+  init:
+    image: busybox
+    volumes:
+      - shared:/data
+    command: sh -c "rm -rf /data/*"
 
   loader:
     build: ./loader
+    environment:
+      - OUTPUT_PATH=/data/chunks
+      - PYTHONUNBUFFERED=1
     volumes:
       - shared:/data
-    # depends_on:
-    #   - init
+    depends_on:
+      - init
 
-  # worker:
-  #   build: ./worker
-  #   deploy:
-  #     replicas: 4  # Adjustable
-  #   volumes:
-  #     - shared:/data
-  #   depends_on:
-  #     - init
-  #     - loader
+  worker:
+    build: ./worker
+    environment:
+      - PYTHONUNBUFFERED=1
+    deploy:
+      replicas: 2  # Adjustable
+    volumes:
+      - shared:/data
+    depends_on:
+      - init
+      - loader
 
-  # aggregator:
-  #   build: ./outputter
-  #   volumes:
-  #     - shared:/data
+  aggregator:
+    build: ./outputter
+    environment:
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - shared:/data
+    depends_on:
+      - init
+      - worker
+
 volumes:
   shared:
