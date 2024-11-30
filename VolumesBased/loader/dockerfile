@@ -2,9 +2,9 @@
 FROM python:latest
 
 
-# add our python program
+# add python program
 ADD infofile.py ./
-# add our python program
+# add python program
 ADD loader.py ./
 # install dependent libraries
 RUN pip install numpy uproot awkward vector pyarrow requests aiohttp

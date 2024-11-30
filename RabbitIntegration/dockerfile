@@ -1,0 +1,9 @@
+# base on latest python image
+FROM python:latest
+
+COPY loader.py infofile.py constants.py worker.py ./
+COPY aggregator.py ./
+
+RUN pip install pika uproot awkward matplotlib requests aiohttp vector pyarrow
+
+CMD ["python", "loader.py"]

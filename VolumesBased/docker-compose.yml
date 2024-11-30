@@ -38,4 +38,4 @@ services:
       - worker
 
 volumes:
-  shared:
+  shared:s

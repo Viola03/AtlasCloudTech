@@ -1,0 +1,57 @@
+services:
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"  
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 5s
+      retries: 12
+  
+  loader:
+    build: .
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    command: ["python", "loader.py"]
+  
+  worker:
+    build: .
+    # deploy:
+    #   replicas: 4
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - PYTHONUNBUFFERED=1
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    command: ["python", "worker.py"]
+  
+  aggregator:
+    build: .
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - output_volume:/output
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    command: ["python", "aggregator.py"]
+
+#Ported locally for easy comparison
+
+volumes:
+  output_volume:
+    # driver: local
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: /home/viola/CloudTechAssignment/output
