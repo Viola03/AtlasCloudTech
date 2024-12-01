@@ -24,8 +24,6 @@ services:
   
   worker:
     build: .
-    # deploy:
-    #   replicas: 4
     environment:
       - RABBITMQ_HOST=rabbitmq
       - PYTHONUNBUFFERED=1

@@ -1,0 +1,14 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: loader
+spec:
+  template:
+    spec:
+      containers:
+      - name: loader
+        image: loader-image  
+        env:
+        - name: RABBITMQ_HOST
+          value: "rabbitmq"
+      restartPolicy: Never

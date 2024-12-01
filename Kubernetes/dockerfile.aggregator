@@ -1,0 +1,8 @@
+# base on latest python image
+FROM python:latest
+
+COPY aggregator.py infofile.py constants.py ./
+
+RUN pip install pika uproot awkward matplotlib requests aiohttp vector pyarrow
+
+CMD ["python", "aggregator.py"]

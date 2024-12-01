@@ -1,0 +1,27 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: aggregator
+spec:
+  template:
+    spec:
+      containers:
+      - name: aggregator
+        image: aggregator-image  
+        env:
+        - name: RABBITMQ_HOST
+          value: "rabbitmq"
+      restartPolicy: Never
+  
+spec:
+  volumes:
+  - name: output-volume
+    persistentVolumeClaim:
+      claimName: output-pvc
+  containers:
+  - name: aggregator
+    image: aggregator-image
+    volumeMounts:
+    - mountPath: /output
+      name: output-volume
+
