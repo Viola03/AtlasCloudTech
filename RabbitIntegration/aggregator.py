@@ -12,7 +12,7 @@ credentials = pika.PlainCredentials('user', 'password')
 parameters = pika.ConnectionParameters(RABBITMQ_HOST, 5672, '/', credentials)
 
 RESULTS_QUEUE = "processed_chunks"
-OUTPUT_PATH = "/output/4lep_invariant_mass.png"  # Save plot in volume
+OUTPUT_PATH = "4lep_invariant_mass.png"  # Save plot in volume
 
 # Luminosity and bin settings
 step_size = 5  # Bin width
@@ -75,8 +75,12 @@ def generate_plot():
     plt.title('H → ZZ* → 4l Analysis', fontsize=15)
     plt.legend()
     plt.grid(True, linestyle='--', alpha=0.6)
-    plt.savefig(OUTPUT_PATH)
-    print(f"Plot saved to {OUTPUT_PATH}")
+    
+    try:
+        plt.savefig(OUTPUT_PATH)
+        print(f"Plot saved to {OUTPUT_PATH}")
+    except Exception as e:
+        print(f"Error saving plot: {e}")
 
 
 def callback(ch, method, properties, body):

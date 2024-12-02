@@ -9,8 +9,38 @@ spec:
   - protocol: TCP
     port: 5672
     targetPort: 5672
-    name: amqp  # Add name for the AMQP protocol port
+    name: amqp
   - protocol: TCP
     port: 15672
     targetPort: 15672
-    name: management  # Add name for the management UI port
+    name: management
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq:3-management
+        env:
+        - name: RABBITMQ_HOST
+          value: rabbitmq
+        - name: RABBITMQ_DEFAULT_USER
+          value: user  
+        - name: RABBITMQ_DEFAULT_PASS
+          value: password 
+        ports:
+        - containerPort: 5672
+          name: amqp
+        - containerPort: 15672
+          name: management

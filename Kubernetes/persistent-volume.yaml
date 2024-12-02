@@ -1,3 +1,26 @@
+# apiVersion: v1
+# kind: PersistentVolume
+# metadata:
+#   name: output-pv
+# spec:
+#   capacity:
+#     storage: 1Gi
+#   accessModes:
+#     - ReadWriteOnce
+#   hostPath:
+#     path: /home/viola/CloudTechAssignment/Kubernetes
+# ---
+# apiVersion: v1
+# kind: PersistentVolumeClaim
+# metadata:
+#   name: output-pvc
+# spec:
+#   accessModes:
+#     - ReadWriteOnce
+#   resources:
+#     requests:
+#       storage: 1Gi
+
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -5,10 +28,12 @@ metadata:
 spec:
   capacity:
     storage: 1Gi
+  volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /home/viola/CloudTechAssignment/Kubernetes
+    path: "/home/viola/CloudTechAssignment/Kubernetes"  # Local path where the data will be stored (on the Kubernetes node)
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -19,4 +44,5 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 1Gi
+      storage: 1Gi  # Same size as the PV
+  

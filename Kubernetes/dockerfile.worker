@@ -1,7 +1,7 @@
 # base on latest python image
 FROM python:latest
 
-COPY loader.py infofile.py constants.py ./
+COPY worker.py infofile.py constants.py ./
 
 RUN pip install pika uproot awkward matplotlib requests aiohttp vector pyarrow
 

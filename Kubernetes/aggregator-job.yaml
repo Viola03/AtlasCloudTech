@@ -7,21 +7,22 @@ spec:
     spec:
       containers:
       - name: aggregator
-        image: aggregator-image  
+        image: aggregator-image:latest
+        imagePullPolicy: Never
         env:
         - name: RABBITMQ_HOST
-          value: "rabbitmq"
+          value: rabbitmq
+        - name: RABBITMQ_USER
+          value: user
+        - name: RABBITMQ_PASSWORD
+          value: password
+        volumeMounts:
+        - mountPath: /output
+          name: output-volume
+      volumes:
+      - name: output-volume
+        persistentVolumeClaim:
+          claimName: output-pvc
       restartPolicy: Never
   
-spec:
-  volumes:
-  - name: output-volume
-    persistentVolumeClaim:
-      claimName: output-pvc
-  containers:
-  - name: aggregator
-    image: aggregator-image
-    volumeMounts:
-    - mountPath: /output
-      name: output-volume
 

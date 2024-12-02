@@ -14,7 +14,16 @@ spec:
     spec:
       containers:
       - name: worker
-        image: worker-image  
+        image: worker-image:latest
+        imagePullPolicy: Never  
         env:
         - name: RABBITMQ_HOST
-          value: "rabbitmq"
+          value: rabbitmq
+        - name: RABBITMQ_USER
+          value: user
+        - name: RABBITMQ_PASSWORD
+          value: password
+      restartPolicy: Always
+
+
+
