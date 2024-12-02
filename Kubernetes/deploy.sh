@@ -1,3 +1,9 @@
+
+
+docker build -t loader-image:latest -f dockerfile.loader .
+docker build -t worker-image:latest -f dockerfile.worker .
+docker build -t aggregator-image:latest -f dockerfile.aggregator .
+
 # kubectl apply -f persistent-volume.yaml
 
 kubectl apply -f rabbitmq-deployment.yaml
