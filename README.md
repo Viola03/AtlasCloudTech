@@ -1,6 +1,6 @@
 This project demonstrates the analysis of particle physics data (Higgs boson decays to four leptons) using scalable architectures. Each implementation showcases how modern cloud and containerization technologies can optimize data processing workflows for particle physics experiments. Navigate to the appropiate directory for each implementation.
 
-1. Volume-Based Implementation
+1. Volume-Based Implementation:
 An initial architecture using shared volumes between docker containers for data exchange. Key components:
 - Loader: splits ROOT files into chunks and writes them to a shared volume
 - Worker: processes chunks and saves results back to the volume
@@ -9,7 +9,9 @@ Setup: Build and run the containers using
 
 `docker-compmose up --build`
 
-2. RabbitMQ-Based Implementation
+Note: as the initial architecture for validation the directory was not 'cleaned up' as the RabbitMQ implementation was an remains in a more segmented state to allow for debugging of each service independently.
+
+2. RabbitMQ-Based Implementation:
 Replacing shared volumes with RabbitMQ for inter-process communication.
 - Loader: Publishes chunks as messages to the queue
 - Worker: Processes messages from the data_chunks queue and publishes results to the processed_chunks queue
@@ -20,7 +22,7 @@ Setup: Build and run the containers using
 
 Access the RabbitMQ Management UI at http://localhost:15672, login with Username: user, Password: password
 
-3. Kubernetes-Based Implementation
+3. Kubernetes-Based Implementation:
 Leverages Kubernetes for container orchestration. Setup can be achieved using the provided shell scripts:
 `./deploy.sh`
 
