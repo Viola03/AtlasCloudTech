@@ -1,4 +1,4 @@
-This project demonstrates the analysis of particle physics data (Higgs boson decays to four leptons) using scalable architectures. Each implementation showcases how modern cloud and containerization technologies can optimize data processing workflows for particle physics experiments.
+This project demonstrates the analysis of particle physics data (Higgs boson decays to four leptons) using scalable architectures. Each implementation showcases how modern cloud and containerization technologies can optimize data processing workflows for particle physics experiments. Navigate to the appropiate directory for each implementation.
 
 1. Volume-Based Implementation
 An initial architecture using shared volumes between docker containers for data exchange. Key components:
@@ -21,7 +21,11 @@ Setup: Build and run the containers using
 Access the RabbitMQ Management UI at http://localhost:15672, login with Username: user, Password: password
 
 3. Kubernetes-Based Implementation
-Leverages Kubernetes for container orchestration. Setup:
-`kubectl apply -f kubernetes-based/manifests/`
+Leverages Kubernetes for container orchestration. Setup can be achieved using the provided shell scripts:
+`./deploy.sh`
 
-Verify pods: `kubectl get pods`
+Verify services with commands in: `status.sh`
+
+System reset: `./clear.sh`
+
+However, the current setup is designed to save the output to a local path described in the persisting volume yaml file for plot validation. This should be changed to a local path on the host machine.
